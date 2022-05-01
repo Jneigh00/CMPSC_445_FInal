@@ -5,6 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (445 Homework 3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.7 (445Final)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
