@@ -52,19 +52,22 @@ splitIndex = int(0.75 * len(data))  # gets the index to split the data 75/25
 trainingData = data[1:splitIndex]  # stores 75 percent of the data into training
 testingData = data[splitIndex:]  # stores remaining 25 percent of data into testing
 
-def print_accuracies(testData, decision_func,alg_name):
-    accuracy = []
-    results = ["False Positive","False Negative",  "True Negative", "True Positive"]
-    for instance in testData:
-        decision = decision_func(instance)
-        accuracy.append(results[2*int(decision == instance[-1])+int(decision == "won")])
 
-    print("Accuracy data for",alg_name+":")
-    c = Counter({x:0 for x in results})
+def print_accuracies(testData, decision_func, alg_name):
+    accuracy = []
+    results = [ "False Negative","False Positive", "True Negative", "True Positive"]
+    for instance in testData:
+        predicted_value = decision_func(instance)
+        actual_value = instance[-1]
+        accuracy.append(results[2 * int(predicted_value == actual_value) + int(predicted_value == "won")])
+
+
+    print("Accuracy data for", alg_name + ":")
+    c = Counter({x: 0 for x in results})
     c.update(accuracy)
-    print("Accuracy of Algorithm:",(c["True Negative"]+c["True Positive"])/len(testData))
-    for k,v in sorted(c.items()):
-        print(k,v)
+    print("Accuracy of Algorithm:", (c["True Negative"] + c["True Positive"]) / len(testData))
+    for k, v in sorted(c.items()):
+        print(k, v)
     print()
 
 
@@ -108,15 +111,15 @@ ann.add(tf.keras.layers.Dense(units=1, activation="sigmoid"))
 ann.compile(optimizer="adam", loss="binary_crossentropy", metrics=['accuracy'])
 
 # Fitting ANN
-ann.fit(X_train, Y_train, batch_size=32, epochs=75,verbose=0)
+ann.fit(X_train, Y_train, batch_size=32, epochs=75, verbose=0)
 
 # Prediction testing
 ######print(ann.predict(X_test).ravel() > 0.5)
 decisions = ann.predict(X_test)
 
-accuracy_data = np.append(decisions, Y_test_string.reshape(-1,1), 1)
+accuracy_data = np.append(decisions, Y_test_string.reshape(-1, 1), 1)
 
-print_accuracies(accuracy_data, lambda x: "won" if float(x[-2])>0.5 else "nowin", "ANN")
+print_accuracies(accuracy_data, lambda x: "won" if float(x[-2]) > 0.5 else "nowin", "ANN")
 
 # accuracy = numpy.array([0.5818, 0.6482, 0.7371, 0.8210, 0.8831, 0.9098, 0.9336, 0.9445, 0.9528, 0.9558, 0.9633, 0.9641,
 #                         0.9695, 0.9725, 0.9754, 0.9783, 0.9808, 0.9812, 0.9862, 0.9841, 0.9887, 0.9879, 0.9891, 0.9908,
@@ -130,7 +133,6 @@ print_accuracies(accuracy_data, lambda x: "won" if float(x[-2])>0.5 else "nowin"
 # plt.show()
 
 ##################################################################
-
 
 
 ######################## DECISON TREE CODE ################################
