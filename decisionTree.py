@@ -26,13 +26,13 @@ def gini_gain(data, index,possibleChoices):  # quality of split based on index
     return gain
 
 
-def create_decision_tree(treeData, features,possibleChoices):
+def create_decision_tree(treeData, features,possibleChoices,max_depth=-1):
     outputSet = list(set(treeData[:, -1]))
     if len(treeData) == 0:
         return "NO DATA"
     if len(outputSet) == 1:
         return outputSet[0]
-    if len(features) == 1:
+    if len(features) == 1 or max_depth==0:
         return Counter(list(treeData[:, -1])).most_common()[0][0]
     features = features.copy()
     splitIndex = sorted(features, key=lambda i: gini_gain(treeData, i,possibleChoices), reverse=False)[0]
@@ -40,7 +40,7 @@ def create_decision_tree(treeData, features,possibleChoices):
     d = {splitIndex: dict()}
     for choice in possibleChoices[splitIndex]:
         newdata = treeData[treeData[:, splitIndex] == choice]
-        decision = create_decision_tree(newdata, features,possibleChoices)
+        decision = create_decision_tree(newdata, features,possibleChoices,max_depth=max_depth-1)
         d[splitIndex][choice] = decision
     return d
 

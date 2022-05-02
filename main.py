@@ -9,6 +9,7 @@ import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 import matplotlib.pyplot as plt
+import random
 
 # numpy.set_printoptions(threshold=sys.maxsize)
 # print(tf.__version__)
@@ -61,7 +62,6 @@ def print_accuracies(testData, decision_func, alg_name):
         actual_value = instance[-1]
         accuracy.append(results[2 * int(predicted_value == actual_value) + int(predicted_value == "won")])
 
-
     print("Accuracy data for", alg_name + ":")
     c = Counter({x: 0 for x in results})
     c.update(accuracy)
@@ -69,6 +69,15 @@ def print_accuracies(testData, decision_func, alg_name):
     for k, v in sorted(c.items()):
         print(k, v)
     print()
+    print("Sample Output from 10 random test runs:")
+    print("Predicted\t\tActual")
+    print("-"*40)
+    for instance in random.sample(list(testData),10):
+        predicted_value = decision_func(instance)
+        actual_value = instance[-1]
+        print(f"{predicted_value:<5}\t\t{actual_value}")
+
+    print("\n"*2)
 
 
 ######################## ANN CODE ################################
@@ -117,7 +126,8 @@ ann.fit(X_train, Y_train, batch_size=32, epochs=75, verbose=0)
 ######print(ann.predict(X_test).ravel() > 0.5)
 decisions = ann.predict(X_test)
 
-accuracy_data = np.append(decisions, Y_test_string.reshape(-1, 1), 1)
+accuracy_data = np.append(X_test_string, decisions, 1)
+accuracy_data = np.append(accuracy_data, Y_test_string.reshape(-1, 1), 1)
 
 print_accuracies(accuracy_data, lambda x: "won" if float(x[-2]) > 0.5 else "nowin", "ANN")
 
@@ -137,9 +147,21 @@ print_accuracies(accuracy_data, lambda x: "won" if float(x[-2]) > 0.5 else "nowi
 
 ######################## DECISON TREE CODE ################################
 
+# accuracies=[]
+# for depth in range(20):
+#     possibleChoices = [list(set(data[:, col])) for col in range(trainingData.shape[1])]
+#     final_tree = create_decision_tree(trainingData, list(range(np.shape(trainingData)[1] - 1)), possibleChoices,max_depth=depth)
+#     accuracy=len([instance for instance in testingData if evaluate_decision_tree(instance, final_tree)==instance[-1]])*1.0/len(testingData)
+#     accuracies.append(accuracy)
+#
+# plt.plot(range(20),accuracies)
+# plt.xticks(range(1,21))
+# plt.title('Decision Tree Accuracy after increasing max depth')
+# plt.xlabel('Depth')
+# plt.ylabel('Accuracy')
+# plt.show()
 possibleChoices = [list(set(data[:, col])) for col in range(trainingData.shape[1])]
 final_tree = create_decision_tree(trainingData, list(range(np.shape(trainingData)[1] - 1)), possibleChoices)
-# print_decision_tree(final_tree, 99)
 print_accuracies(testingData, lambda instance: evaluate_decision_tree(instance, final_tree), "DECISION TREE")
 
 ###########################################################################
