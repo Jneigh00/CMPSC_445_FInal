@@ -6,6 +6,7 @@ import math
 
 
 
+
 def gini(data):  # gini of a choice
     game_results = data[:, -1]
     total = len(game_results)
@@ -29,7 +30,7 @@ def create_decision_tree(treeData, features,possibleChoices):
     outputSet = list(set(treeData[:, -1]))
     if len(treeData) == 0:
         return "NO DATA"
-    if len(outputSet) == 1:  ##laplacian smoothing if nothing for this output
+    if len(outputSet) == 1:
         return outputSet[0]
     if len(features) == 1:
         return Counter(list(treeData[:, -1])).most_common()[0][0]
